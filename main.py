@@ -2,9 +2,11 @@ import os
 import pandas as pd
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
+import base64
 
 
-video_file_path = "ścieżka/do/pliku/wideo.mp4"
+video_file_path = "static/wideo.mkv"
+# video_file_path = "static/wideo.mp4"
 
 
 credentials_file_path = "api.json"
@@ -19,7 +21,7 @@ video_service = build('videointelligence', 'v1', credentials=credentials)
 
 def transcribe_video(video_file_path):
     with open(video_file_path, 'rb') as video_file:
-        input_content = video_file.read()
+        input_content = base64.b64encode(video_file.read()).decode('utf-8')
 
     features = ['SPEECH_TRANSCRIPTION']
     operation = video_service.videos().annotate(body={
@@ -29,9 +31,8 @@ def transcribe_video(video_file_path):
 
     operation_name = operation['name']
 
-
-    result = video_service.operations().get(name=operation_name).execute()
-    transcription_results = result['annotationResults'][0]['speechTranscriptions']
+    result = video_service.projects().locations().operations().get(name=operation_name).execute()
+    transcription_results = result['response']['annotationResults'][0]['speechTranscriptions']
 
     return transcription_results
 

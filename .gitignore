@@ -4,3 +4,4 @@
 .env
 /resources/
 api.json
+/static/
