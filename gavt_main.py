@@ -14,6 +14,7 @@ try:
     video_file_path = gavt_utilities.get_video_file_path()
     google_spreadsheet_id = gavt_utilities.get_google_spreadsheet_id()
     language_code = gavt_utilities.get_language_code()
+    open_output_when_ready = gavt_utilities.get_open_output_spreadsheet_when_ready()
 
     if not credentials_file_path or not video_file_path or not google_spreadsheet_id or not language_code:
         gavt_utilities.no_required_information_message()
@@ -89,12 +90,14 @@ try:
         ).execute()
 
         os.system('cls')
-        print('Transcriber finished it\'s work !')
+        print('Transcriber finished its work !')
 
     input_content = gavt_utilities.input_video_content(video_file_path)
     transcription_results = transcribe_video(input_content, video_service)
     send_to_spreadsheet(transcription_results)
-    gavt_utilities.open_google_spreadsheet(google_spreadsheet_id)
+
+    if open_output_when_ready == 'YES':
+        gavt_utilities.open_google_spreadsheet(google_spreadsheet_id)
 
 except Exception as e:
     error_message = f"An unexpected error occurred: {str(e)}"

@@ -88,14 +88,27 @@ def get_language_code():
         language_code = language_code_var.get()
     return language_code
 
+
+def get_open_output_spreadsheet_when_ready():
+    open_output_spreadsheet_when_ready = os.environ.get('OPEN_OUTPUT_SPREADSHEET_WHEN_READY')
+    if not open_output_spreadsheet_when_ready:
+        root = tk.Tk()
+        root.withdraw()
+        result = messagebox.askquestion("Open transription autoamatically ?", "Do you want to open the output spreadsheet when transcription is ready?")
+        open_output_spreadsheet_when_ready = 'YES' if result == 'yes' else 'NO'
+    return open_output_spreadsheet_when_ready
+
+
 def input_video_content(video_file_path):
     with open(video_file_path, 'rb') as video_file:
         input_content = base64.b64encode(video_file.read()).decode('utf-8')
     return input_content
 
+
 def open_google_spreadsheet(spreadsheet_id):
     url = f'https://docs.google.com/spreadsheets/d/{spreadsheet_id}'
     webbrowser.open(url)
+
 
 def no_required_information_message():
     msg_text='''Missing required information.
@@ -103,6 +116,7 @@ You may start again and provide credentials file path, video file path, Google S
     messagebox.showerror('Error', msg_text)
     print('Transcriber did not finish his work, because of missing input data. You may try again providing necessary data.')
     exit()
+
 
 def display_error_message(message):
     messagebox.showerror('Error', message)
