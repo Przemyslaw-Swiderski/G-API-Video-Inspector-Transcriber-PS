@@ -1,4 +1,4 @@
-# Transcriber
+# Video Transcriber
 Transcriber is a Python script that transcribes speech from a video file and sends the transcription results to a Google Spreadsheet. It utilizes the Google Cloud Video Intelligence API for speech recognition and the Google Sheets API for interacting with the spreadsheet.
 
 ## Prerequisites
