@@ -54,8 +54,8 @@ pip install -r requirements.txt
 
 
 ## Usage
-1. Set up the necessary environment variables in .env file located in the root directory of the project. Strings required. Template of the .env file included in the project.
-If you do not provide them as environment variables you may provide them when prompted by the script.
+
+1. If you want to use the script for any automation pourposes it may be convenient to set up the necessary environment variables in .env file located in the root directory of the project. Strings are required. Template of the .env file included in the project.
 The required information includes:
 
 CREDENTIALS_FILE_PATH: Path to the API credentials file (api.json).
@@ -64,10 +64,16 @@ GOOGLE_SPREADSHEET_ID: ID of the Google Spreadsheet where the transcription resu
 LANGUAGE_CODE: Language code for the speech in the video (e.g., en-US for English, es-ES for Spanish).
 OPEN_OUTPUT_SPREADSHHEET_WHEN_READY: (YES or NO)
 
+If you do not provide them as environment variables you may provide them when prompted by the script. This may be usefull when you need transcription of one or few files from time to time.
 
 2. Run the script using the following command:
 python gavt_main.py
+
 The script will transcribe the speech from the video, display a progress bar, and upload the results to the specified Google Spreadsheet.
+
+## Limitations
+Supported video formats.
+The Video Intelligence API supports common video formats, including .MOV, .MPEG4, .MP4, .AVI, and the formats decodable by ffmpeg.
 
 ## Troubleshooting
 If you encounter any issues or errors during the execution of the script, please refer to the following:
@@ -87,3 +93,7 @@ Author of the script do not take any responsibility for any losses made by scrip
 
 ## Acknowledgments
 This script utilizes the Google Cloud Video Intelligence API and Google Sheets API.
+
+## Features for next sprints
+1. Improve error handling.
+2. Add an option for the user to choose whether they wanto to receive the transcription of the entire text string, individual words, or both.
