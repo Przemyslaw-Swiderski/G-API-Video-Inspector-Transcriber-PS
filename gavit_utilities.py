@@ -20,7 +20,8 @@ def get_credentials_file_path() -> str:
             credentials_file_path = filedialog.askopenfilename(title='Select Credentials File')
         return credentials_file_path
     except Exception as e:
-        exception_message(e)
+        e_message = str(e) + " in: get_credentials_file_path() -> str"
+        exception_message(e_message)
 
 
 def get_video_file_path() -> str:
@@ -32,7 +33,8 @@ def get_video_file_path() -> str:
             video_file_path = filedialog.askopenfilename(title='Select Video File')
         return video_file_path
     except Exception as e:
-        exception_message(e)
+        e_message = str(e) + " in: def get_video_file_path() -> str"
+        exception_message(e_message)
 
 
 def is_video_decodable(video_file_path: str) -> bool:
@@ -129,8 +131,8 @@ def open_google_spreadsheet(spreadsheet_id: str):
         url = f'https://docs.google.com/spreadsheets/d/{spreadsheet_id}'
         webbrowser.open(url)
     except Exception as e:
-        error_message = f"An unexpected error occurred: {str(e)}"
-        exception_message(e)
+        e_message = str(e) + " in: def open_google_spreadsheet(spreadsheet_id: str)"
+        exception_message(e_message)
 
 
 def error_information_message(msg_text_1: str, msg_text_2: str):
@@ -139,9 +141,9 @@ def error_information_message(msg_text_1: str, msg_text_2: str):
     exit()
 
 
-def exception_message(e): 
-    messagebox.showerror('Error', f'An unexpected error occurred: {str(e)}')
-    print(f'Transcriber did not finish its work due to an unexpected error. You may fix the error {e} and try again.')
+def exception_message(e_message): 
+    messagebox.showerror('Error', f'Transcriber did not finish its work due to an unexpected error. You may fix the error and try again. Error description: {e_message}')
+    print(f'Transcriber did not finish its work due to an unexpected error. You may fix the error and try again. Error description: {e_message}')
     exit()
 
 def transcribe_video(input_content: str, credentials: object, language_code: str) -> list:
@@ -176,7 +178,8 @@ def transcribe_video(input_content: str, credentials: object, language_code: str
             transcription_results = []
         return transcription_results
     except Exception as e:
-        exception_message(e)
+        e_message = str(e) + " in: def transcribe_video(input_content: str, credentials: object, language_code: str) -> list"
+        exception_message(e_message)
 
 
 def send_to_spreadsheet(transcription_results: list, credentials: object, google_spreadsheet_id: str):
@@ -209,4 +212,5 @@ def send_to_spreadsheet(transcription_results: list, credentials: object, google
         os.system('cls')
         print('Transcriber finished its work !')
     except Exception as e:
-        exception_message(e)
+        e_message = str(e) + " in: def send_to_spreadsheet(transcription_results: list, credentials: object, google_spreadsheet_id: str)"
+        exception_message(e_message)
