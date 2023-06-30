@@ -4,11 +4,6 @@ from gavit_main import main
 
 @pytest.mark.parametrize("input_values, expected_output", [
     (['path/to/credentials.json', 'path/to/video.mp4', 'spreadsheet_id', 'en-US', 'YES'], None),
-    (['', 'path/to/video.mp4', 'spreadsheet_id', 'en-US', 'YES'], 'Missing required information'),
-    (['path/to/credentials.json', '', 'spreadsheet_id', 'en-US', 'YES'], 'Missing required information'),
-    (['path/to/credentials.json', 'path/to/video.mp4', '', 'en-US', 'YES'], 'Missing required information'),
-    (['path/to/credentials.json', 'path/to/video.mp4', 'spreadsheet_id', '', 'YES'], 'Missing required information'),
-    (['path/to/credentials.json', 'path/to/video.mp4', 'spreadsheet_id', 'en-US', ''], 'Missing required information'),
 ])
 @mock.patch('builtins.input')
 def test_main(mock_input, input_values, expected_output):

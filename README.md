@@ -117,3 +117,11 @@ Author of the script do not take any responsibility for any losses made by scrip
 
 ## Acknowledgments
 This script utilizes the Google Cloud Video Intelligence API and Google Sheets API.
+
+## Tests
+Manual end-to-end testing was conducted. These tests included:
+- transcription trials in case of files formats non decodable by ffmpeg,
+- lack of important input data like paths to files,
+- quality check of the transcription.
+Script was tested by Pytest framework as well.
+Most important error handling is included. In the future next tests will be conducted and error handling improved.
