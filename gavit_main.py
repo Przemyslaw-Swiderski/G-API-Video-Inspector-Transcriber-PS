@@ -2,10 +2,9 @@ import os
 from google.oauth2 import service_account
 import gavit_utilities
 
-
-
 def main():
     os.system('cls')
+    print('Transcriber started to work. Please wait.')
     credentials_file_path = gavit_utilities.get_credentials_file_path()
     video_file_path = gavit_utilities.get_video_file_path()
     if not gavit_utilities.is_video_decodable(video_file_path):
@@ -22,8 +21,6 @@ def main():
         gavit_utilities.error_information_message(msg_text_1, msg_text_2)
 
     credentials = service_account.Credentials.from_service_account_file(credentials_file_path)
-
-    print('Transcriber started to work. Please wait.')
 
     input_content = gavit_utilities.input_video_content(video_file_path)
     transcription_results = gavit_utilities.transcribe_video(input_content, credentials, language_code)
