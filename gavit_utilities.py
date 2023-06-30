@@ -8,6 +8,7 @@ import pandas as pd
 from googleapiclient.discovery import build
 import webbrowser
 import subprocess
+from google.cloud import videointelligence
 
 load_dotenv()
 
@@ -120,12 +121,6 @@ def get_open_output_spreadsheet_when_ready() -> str:
     return open_output_spreadsheet_when_ready
 
 
-def input_video_content(video_file_path: str) -> str:
-    with open(video_file_path, 'rb') as video_file:
-        input_content = base64.b64encode(video_file.read()).decode('utf-8')
-    return input_content
-
-
 def open_google_spreadsheet(spreadsheet_id: str):
     try:
         url = f'https://docs.google.com/spreadsheets/d/{spreadsheet_id}'
@@ -146,22 +141,32 @@ def exception_message(e_message):
     print(f'Transcriber did not finish its work due to an unexpected error. You may fix the error and try again. Error description: {e_message}')
     exit()
 
+
+def input_video_content(video_file_path: str) -> str:
+    with open(video_file_path, 'rb') as video_file:
+        input_content = base64.b64encode(video_file.read()).decode('utf-8')
+    return input_content
+
+
 def transcribe_video(input_content: str, credentials: object, language_code: str) -> list:
     try:
-        video_service = build('videointelligence', 'v1', credentials=credentials)
-        features = ['SPEECH_TRANSCRIPTION']
-        operation = video_service.videos().annotate(body={
-            'inputContent': input_content,
-            'features': features,
-            'videoContext': {
-                'speechTranscriptionConfig': {
-                    'languageCode': language_code
-                }
-            }
-        }).execute()
-        operation_name = operation['name']
+        video_client = videointelligence.VideoIntelligenceServiceClient(credentials=credentials)
+        features = [videointelligence.Feature.SPEECH_TRANSCRIPTION]
+        config = videointelligence.SpeechTranscriptionConfig(language_code=language_code, enable_automatic_punctuation=True)
+        video_context = videointelligence.VideoContext(speech_transcription_config=config)
 
-        progress_bar = 'Transcriber started to work. Please wait.'
+        operation = video_client.annotate_video(
+            request={
+                "features": features,
+                'input_content': input_content,
+                "video_context": video_context,
+            }
+        )
+
+        operation_name = operation.operation.name
+        video_service = build('videointelligence', 'v1', credentials=credentials)
+
+        progress_bar = 'Transcription in progress. Please wait.'
         while True:
             result = video_service.projects().locations().operations().get(name=operation_name).execute()
             if 'done' in result and result['done']:

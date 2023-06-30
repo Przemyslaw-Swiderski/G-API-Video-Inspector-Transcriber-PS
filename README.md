@@ -29,11 +29,10 @@ Please pay attention to get proper ID of the Google Spreadsheet. Here is how to 
 - Copy the value of "SPREADSHEET_ID" from the URL.
 For example, if the URL of the Google Spreadsheet looks like this: https://docs.google.com/spreadsheets/d/1AbCdEfGhIjKlMnOpQrStUvWxYz0123456789/edit, then the ID of the spreadsheet is 1AbCdEfGhIjKlMnOpQrStUvWxYz0123456789.
 
-5. FFmpeg installed and available in your system's PATH
-To check if FFmpeg is installed and available in your system's PATH, you can use the following steps:
-Open a command prompt or terminal window.
-Type ffmpeg and press Enter.
+5. FFmpeg installed and available in your system's PATH.
 
+To check if FFmpeg is installed and available in your system's PATH, you can use the following steps:
+Open a command prompt or terminal window. Type ffmpeg and press Enter.
 If FFmpeg is installed and available in the PATH, it should display the version information and available options.
 If FFmpeg is not installed or not in the PATH, the command prompt or terminal will display an error message indicating that the command is not recognized.
 If FFmpeg is not installed or not in the PATH, you will need to install it and make sure it is accessible from the command prompt or terminal.
@@ -117,11 +116,3 @@ Author of the script do not take any responsibility for any losses made by scrip
 
 ## Acknowledgments
 This script utilizes the Google Cloud Video Intelligence API and Google Sheets API.
-
-## Tests
-Manual end-to-end testing was conducted. These tests included:
-- transcription trials in case of files formats non decodable by ffmpeg,
-- lack of important input data like paths to files,
-- quality check of the transcription.
-Script was tested by Pytest framework as well.
-Most important error handling is included. In the future next tests will be conducted and error handling improved.
