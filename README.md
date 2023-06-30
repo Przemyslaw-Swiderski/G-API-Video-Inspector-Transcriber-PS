@@ -29,6 +29,26 @@ Please pay attention to get proper ID of the Google Spreadsheet. Here is how to 
 - Copy the value of "SPREADSHEET_ID" from the URL.
 For example, if the URL of the Google Spreadsheet looks like this: https://docs.google.com/spreadsheets/d/1AbCdEfGhIjKlMnOpQrStUvWxYz0123456789/edit, then the ID of the spreadsheet is 1AbCdEfGhIjKlMnOpQrStUvWxYz0123456789.
 
+5. FFmpeg installed and available in your system's PATH
+To check if FFmpeg is installed and available in your system's PATH, you can use the following steps:
+Open a command prompt or terminal window.
+Type ffmpeg and press Enter.
+
+If FFmpeg is installed and available in the PATH, it should display the version information and available options.
+If FFmpeg is not installed or not in the PATH, the command prompt or terminal will display an error message indicating that the command is not recognized.
+If FFmpeg is not installed or not in the PATH, you will need to install it and make sure it is accessible from the command prompt or terminal.
+Here are the general steps to install FFmpeg:
+Windows:
+Download a static build of FFmpeg from the official website: https://ffmpeg.org/download.html#build-windows
+Extract the downloaded ZIP file to a location on your computer.
+Add the FFmpeg binary directory to the system's PATH:
+Open the Start menu and search for "Environment Variables."
+Select "Edit the system environment variables."
+Click the "Environment Variables" button.
+In the "System variables" section, select the "Path" variable and click "Edit."
+Add the path to the FFmpeg binary directory (the one containing the ffmpeg.exe file) to the list of paths. For example, C:\ffmpeg\bin.
+Click "OK" to save the changes.
+
 ## Setting up the Environment and Installation
 To ensure a clean and isolated environment for running the script, it is recommended to create a virtual environment using venv.
 
@@ -56,13 +76,17 @@ pip install -r requirements.txt
 ## Usage
 
 1. If you want to use the script for any automation pourposes it may be convenient to set up the necessary environment variables in .env file located in the root directory of the project. Strings are required. Template of the .env file included in the project.
-The required information includes:
-
-CREDENTIALS_FILE_PATH: Path to the API credentials file (api.json).
-VIDEO_FILE_PATH: Path to the video file to transcribe.
-GOOGLE_SPREADSHEET_ID: ID of the Google Spreadsheet where the transcription results will be stored.
-LANGUAGE_CODE: Language code for the speech in the video (e.g., en-US for English, es-ES for Spanish).
-OPEN_OUTPUT_SPREADSHHEET_WHEN_READY: (YES or NO)
+The required information include:
+Path to the API credentials file (api.json).
+  Example: CREDENTIALS_FILE_PATH="C:\Users\Username\G-API-Video-Inspector-Transcriber\static\api.json" as absolute path or relative path: "static/api.json"
+Path to the video file to transcribe:
+  VIDEO_FILE_PATH="C:\Users\Username\G-API-Video-Inspector-Transcriber\static\video.mp4" as absolute path or relative path: "static/video.mp4"
+ID of the Google Spreadsheet where the transcription results will be stored.
+  Example: GOOGLE_SPREADSHEET_ID="1AbCdEfGhIjKlMnOpQrStUvWxYz0123456789"
+Language code for the speech in the video (e.g., en-US for English, es-ES for Spanish).
+  Example: LANGUAGE_CODE="pl-PL"
+Information if the spreadsheet with results shoud be open automaticaly by script.
+  Example: OPEN_OUTPUT_SPREADSHHEET_WHEN_READY="YES"
 
 If you do not provide them as environment variables you may provide them when prompted by the script. This may be usefull when you need transcription of one or few files from time to time.
 
@@ -93,7 +117,3 @@ Author of the script do not take any responsibility for any losses made by scrip
 
 ## Acknowledgments
 This script utilizes the Google Cloud Video Intelligence API and Google Sheets API.
-
-## Features for next sprints
-1. Improve error handling.
-2. Add an option for the user to choose whether they wanto to receive the transcription of the entire text string, individual words, or both.

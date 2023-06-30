@@ -2,3 +2,4 @@ pandas==2.0.2
 google-auth==2.20.0
 google-api-python-client==2.90.0
 python-dotenv==0.21.1
+pytest==7.4.0
