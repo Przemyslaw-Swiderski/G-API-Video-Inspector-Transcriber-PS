@@ -141,7 +141,7 @@ def error_information_message(msg_text_1: str, msg_text_2: str):
 
 def exception_message(e): 
     messagebox.showerror('Error', f'An unexpected error occurred: {str(e)}')
-    print(f'Transcriber did not finish its work due to an unexpected error. You may fix the error {error_message} and try again.')
+    print(f'Transcriber did not finish its work due to an unexpected error. You may fix the error {e} and try again.')
     exit()
 
 def transcribe_video(input_content: str, credentials: object, language_code: str) -> list:
