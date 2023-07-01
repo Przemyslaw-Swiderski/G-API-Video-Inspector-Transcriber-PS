@@ -97,7 +97,7 @@ pip install -r requirements.txt
 
 2. Run the script using the following command:
     ```
-    python gavt_main.py
+    python gavit_main.py
     ```
     The script will transcribe the speech from the video, display a progress bar, and upload the results to the specified Google Spreadsheet.
 
