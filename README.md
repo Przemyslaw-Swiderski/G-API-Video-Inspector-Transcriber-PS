@@ -8,31 +8,31 @@ Before running the script, make sure you have the following:
 
 2. Google Cloud Platform (GCP) account with the Video Intelligence API and Sheets API enabled.
 
-Creating a Google Cloud Account
-If you don't have a Google Cloud account yet, create one at https://cloud.google.com/. You will need a Google Cloud account to access the Google Cloud Video Intelligence API.
+    Creating a Google Cloud Account
+    If you don't have a Google Cloud account yet, create one at https://cloud.google.com/. You will need a Google Cloud account to access the Google Cloud Video Intelligence API.
 
 3. API credentials file (api.json) with appropriate permissions for accessing the Video Intelligence and Sheets APIs.
 
-Obtaining an API Key
-Sign in to the Google Cloud Console (https://console.cloud.google.com/) using your Google Cloud account. Create a new project if you don't have one already. Then, go to the "Credentials" page (https://console.cloud.google.com/apis/credentials) and generate a new API key for your project. Make sure the Video Intelligence API and Google Sheets API are enabled in the "Library" tab (https://console.cloud.google.com/apis/library).
+    Obtaining an API Key
+    Sign in to the Google Cloud Console (https://console.cloud.google.com/) using your Google Cloud account. Create a new project if you don't have one already. Then, go to the "Credentials" page (https://console.cloud.google.com/apis/credentials) and generate a new API key for your project. Make sure the Video Intelligence API and Google Sheets API are enabled in the "Library" tab (https://console.cloud.google.com/apis/library).
 
 4. Google Spreadsheet preapared to obtain results of transcription.
-Please make sure that the Service Account has permisssion to edit the Google Spreadsheet preapared to display transcription results.
-You ma check the email address connected with the Service Account here: https://console.cloud.google.com/apis/api/videointelligence.googleapis.com/credentials
+    Please make sure that the Service Account has permisssion to edit the Google Spreadsheet preapared to display transcription results.
+    You ma check the email address connected with the Service Account here: https://console.cloud.google.com/apis/api/videointelligence.googleapis.com/credentials
 
-If it is allowed by you confidence policy, you may give permision to view the Spreadsheet by anyone who have the link as weel. It'll be helpful if you want the sript to open the spreedsheet by Google acoount without specific permission to open it.
-Otherwise in order to avoid permission bugs, you need to block openning of the spreedsheet by the script setting OPEN_SPREADSHHEET_WHEN_FINISHED to NO in enviroment variables.
+    If it is allowed by you confidence policy, you may give permision to view the Spreadsheet by anyone who have the link as weel. It'll be helpful if you want the sript to open the spreedsheet by Google acoount without specific permission to open it.
+    Otherwise in order to avoid permission bugs, you need to block openning of the spreedsheet by the script setting OPEN_SPREADSHHEET_WHEN_FINISHED to NO in enviroment variables.
 
-Please pay attention to get proper ID of the Google Spreadsheet. Here is how to guide:
-- Open the Google Spreadsheet to which you want to obtain the ID.
-- Check the URL in the browser's address bar. It should have the following structure: https://docs.google.com/spreadsheets/d/SPREADSHEET_ID/edit, where "SPREADSHEET_ID" is the actual ID of the spreadsheet.
-- Copy the value of "SPREADSHEET_ID" from the URL.
-For example, if the URL of the Google Spreadsheet looks like this: https://docs.google.com/spreadsheets/d/1AbCdEfGhIjKlMnOpQrStUvWxYz0123456789/edit, then the ID of the spreadsheet is 1AbCdEfGhIjKlMnOpQrStUvWxYz0123456789.
+    Please pay attention to get proper ID of the Google Spreadsheet. Here is how to guide:
+    - Open the Google Spreadsheet to which you want to obtain the ID.
+    - Check the URL in the browser's address bar. It should have the following structure: https://docs.google.com/spreadsheets/d/SPREADSHEET_ID/edit, where "SPREADSHEET_ID" is the actual ID of the spreadsheet.
+    - Copy the value of "SPREADSHEET_ID" from the URL.
+    For example, if the URL of the Google Spreadsheet looks like this: https://docs.google.com/spreadsheets/d/1AbCdEfGhIjKlMnOpQrStUvWxYz0123456789/edit, then the ID of the spreadsheet is 1AbCdEfGhIjKlMnOpQrStUvWxYz0123456789.
 
 5. FFmpeg installed and available in your system's PATH.
 
-To check if FFmpeg is installed and available in your system's PATH, you can use the following steps:
-Open a command prompt or terminal window. Type ffmpeg and press Enter.
+  To check if FFmpeg is installed and available in your system's PATH, you can use the following steps:
+  Open a command prompt or terminal window. Type ffmpeg and press Enter.
 If FFmpeg is installed and available in the PATH, it should display the version information and available options.
 If FFmpeg is not installed or not in the PATH, the command prompt or terminal will display an error message indicating that the command is not recognized.
 If FFmpeg is not installed or not in the PATH, you will need to install it and make sure it is accessible from the command prompt or terminal.
