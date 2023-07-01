@@ -81,7 +81,7 @@ pip install -r requirements.txt
     Path to the API credentials file (api.json). Example:
     CREDENTIALS_FILE_PATH="C:\Users\Username\G-API-Video-Inspector-Transcriber\static\api.json" as absolute path or relative path: "static/api.json"
 
-    Path to the video file to transcribe. Example: 
+    Path to the video file to transcribe. Example:                                            
     VIDEO_FILE_PATH="C:\Users\Username\G-API-Video-Inspector-Transcriber\static\video.mp4" as absolute path or relative path: "static/video.mp4"
 
     ID of the Google Spreadsheet where the transcription results will be stored. Example:
