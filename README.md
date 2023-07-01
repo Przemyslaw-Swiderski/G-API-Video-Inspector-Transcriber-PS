@@ -29,7 +29,27 @@ Before running the script, make sure you have the following:
     - Copy the value of "SPREADSHEET_ID" from the URL.
     For example, if the URL of the Google Spreadsheet looks like this: https://docs.google.com/spreadsheets/d/1AbCdEfGhIjKlMnOpQrStUvWxYz0123456789/edit, then the ID of the spreadsheet is 1AbCdEfGhIjKlMnOpQrStUvWxYz0123456789.
 
-5. FFmpeg installed and available in your system's PATH.
+5. Bucket created in Storage on Google Cloud.
+    In order to have it, you may follow steps decribed below.
+
+    Enable the Cloud Storage API:
+    - Open the Google Cloud Console by clicking on the navigation menu at the top left and selecting "Cloud Console."
+    - In the console, click on the project drop-down and select the project you created.
+    - Go to the APIs & Services Dashboard by clicking on the menu icon and selecting "APIs & Services" > "Dashboard."
+    - Click on the "+ Enable APIs and Services" button.
+    - Search for "Cloud Storage" and select "Cloud Storage API."
+    - Click on the "Enable" button to enable the API.
+
+    Create a bucket:
+    - In the Google Cloud Console, click on the navigation menu and select "Storage" > "Browser."
+    - Click on the "+ Create bucket" button.
+    - Enter a unique name for your bucket (lowercase letters, numbers, dashes only).
+    - Select the storage class that suits your needs.
+    - Choose the location where you want your bucket to be stored.
+    - Configure the default access control for your bucket (either "Fine-grained" or "Uniform").
+    - Click on the "Create" button to create the bucket.
+
+6. FFmpeg installed and available in your system's PATH.
     To check if FFmpeg is installed and available in your system's PATH, you can type ffmpeg and press Enter.
     - If FFmpeg is installed and available in the PATH, it should display the version information and available options.
     - If FFmpeg is not installed or not in the PATH, the command prompt or terminal will display an error message indicating that the command is not recognized.
@@ -95,7 +115,11 @@ pip install -r requirements.txt
 
     If you do not provide them as environment variables you may provide them when prompted by the script. This may be usefull when you need transcription of one or few files from time to time.
 
-2. Run the script using the following command:
+3. As a default option script sends copy of file to Google Claud Storage and than performs transscription. It is faster.
+    You may decide to process smaller files directly from local by setting PROCESS_SMALL_FILE_DIRECTLY_FROM_LOCAL="YES" in environmental variables.
+    But remember that it is not possible in case of files which size is above 524288000 bytes. It is because of the payload limit for processing files directly from local file. In case of these files even if you set up PROCESS_SMALL_FILE_DIRECTLY_FROM_LOCAL="YES" the larger files anyway will be sent and processed from Google Cloud Storage.
+
+4. Run the script using the following command:
     ```
     python gavit_main.py
     ```
