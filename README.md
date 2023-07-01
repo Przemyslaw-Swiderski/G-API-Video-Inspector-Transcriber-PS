@@ -97,6 +97,7 @@ The script will transcribe the speech from the video, display a progress bar, an
 ## Limitations
 Supported video formats.
 The Video Intelligence API supports common video formats, including .MOV, .MPEG4, .MP4, .AVI, and the formats decodable by ffmpeg.
+For more limitations, please read https://cloud.google.com/video-intelligence/quotas.
 
 ## Troubleshooting
 If you encounter any issues or errors during the execution of the script, please refer to the following:

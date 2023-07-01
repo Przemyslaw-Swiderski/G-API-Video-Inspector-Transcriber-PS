@@ -9,6 +9,7 @@ from googleapiclient.discovery import build
 import webbrowser
 import subprocess
 from google.cloud import videointelligence
+import json
 
 load_dotenv()
 
@@ -171,17 +172,51 @@ def transcribe_video(input_content: str, credentials: object, language_code: str
             result = video_service.projects().locations().operations().get(name=operation_name).execute()
             if 'done' in result and result['done']:
                 break
-            time.sleep(1)
+            time.sleep(3)
             os.system('cls')
-            progress_bar = progress_bar + '.'
+            progress_bar = progress_bar + '...'
             print(progress_bar)
 
-        annotation_results = result['response']['annotationResults'][0]
-        if 'speechTranscriptions' in annotation_results:
-            transcription_results = annotation_results['speechTranscriptions']
-        else:
-            transcription_results = []
-        return transcription_results
+  
+        result = operation.result()
+
+        annotation_results = result.annotation_results[0]
+
+        print(annotation_results.speech_transcriptions)
+
+        transcription_data = []
+        for speech_transcription in annotation_results.speech_transcriptions:
+            for alternative in speech_transcription.alternatives:
+                alternative_data = {
+                    "transcript": alternative.transcript,
+                    "confidence": alternative.confidence,
+                    "word_level_info": []
+                }
+
+                for word_info in alternative.words:
+                    word = word_info.word
+                    start_time = word_info.start_time.seconds + word_info.start_time.microseconds * 1e-6
+                    end_time = word_info.end_time.seconds + word_info.end_time.microseconds * 1e-6
+
+                    word_info_data = {
+                        "word": word,
+                        "start_time": start_time,
+                        "end_time": end_time
+                    }
+
+                    alternative_data["word_level_info"].append(word_info_data)
+
+                transcription_data.append(alternative_data)
+
+        output_file = "static/result_temp_file.json"
+
+        if os.path.exists(output_file):
+            os.remove(output_file)
+
+        with open(output_file, 'w') as json_file:
+            json.dump(transcription_data, json_file, indent=4)
+
+        return transcription_data
     except Exception as e:
         e_message = str(e) + " in: def transcribe_video(input_content: str, credentials: object, language_code: str) -> list"
         exception_message(e_message)
@@ -189,23 +224,37 @@ def transcribe_video(input_content: str, credentials: object, language_code: str
 
 def send_to_spreadsheet(transcription_results: list, credentials: object, google_spreadsheet_id: str):
     try:
-        df = pd.DataFrame(columns=['Czas', 'Tekst'])
+        rows = []
         for transcription in transcription_results:
-            alternatives = transcription['alternatives']
-            for alternative in alternatives:
-                transcript = alternative['transcript']
-                start_time = alternative['words'][0]['startTime']
-                end_time = alternative['words'][-1]['endTime']
-                new_row = {'Czas': f'{start_time} - {end_time}', 'Tekst': transcript}
-                new_df = pd.DataFrame(new_row, index=[0])
-                df = pd.concat([df, new_df], ignore_index=True)
+            transcript = transcription['transcript']
+            confidence = transcription['confidence']
+            word_level_info = transcription['word_level_info']
+            start_time = word_level_info[0]['start_time']
+            end_time = word_level_info[-1]['end_time']
+            new_row = {'Czas': f'{start_time} - {end_time}', 'Tekst': transcript, 'Confidence': confidence}
+            rows.append(new_row)
+
+        df = pd.DataFrame(rows, columns=['Czas', 'Tekst', 'Confidence'])
 
         service = build('sheets', 'v4', credentials=credentials)
         sheet = service.spreadsheets()
 
-        sheet.values().append(
+        sheet.values().clear(spreadsheetId=google_spreadsheet_id, range='A:Z').execute()
+
+        header_values = [df.columns.tolist()]
+        sheet.values().update(
             spreadsheetId=google_spreadsheet_id,
             range='A1',
+            valueInputOption='RAW',
+            body=dict(
+                majorDimension='ROWS',
+                values=header_values
+            )
+        ).execute()
+
+        sheet.values().append(
+            spreadsheetId=google_spreadsheet_id,
+            range='A2',
             valueInputOption='RAW',
             insertDataOption='INSERT_ROWS',
             body=dict(
@@ -215,7 +264,7 @@ def send_to_spreadsheet(transcription_results: list, credentials: object, google
         ).execute()
 
         os.system('cls')
-        print('Transcriber finished its work !')
+        print('Transcriber finished its work!')
     except Exception as e:
         e_message = str(e) + " in: def send_to_spreadsheet(transcription_results: list, credentials: object, google_spreadsheet_id: str)"
         exception_message(e_message)
