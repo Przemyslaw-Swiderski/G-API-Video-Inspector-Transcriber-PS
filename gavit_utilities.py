@@ -106,7 +106,6 @@ def process_transcription_data(annotation_results):
 def send_to_spreadsheet(transcription_results: list, credentials: object, google_spreadsheet_id: str):
     try:
         rows = []
-
         for transcription in transcription_results:
             transcript = transcription['transcript']
             confidence = transcription['confidence']
@@ -116,60 +115,15 @@ def send_to_spreadsheet(transcription_results: list, credentials: object, google
             new_row = {'Czas': f'{start_time} - {end_time}', 'Tekst': transcript, 'Confidence': confidence}
             rows.append(new_row)
 
-        df = pd.DataFrame(rows, columns=['Czas', 'Tekst', 'Confidence'])
-
         service = build('sheets', 'v4', credentials=credentials)
         sheet = service.spreadsheets()
+
         sheet.values().clear(spreadsheetId=google_spreadsheet_id, range='A:Z').execute()
-        sheetId = 0
-        requests = [
-            {
-                'updateDimensionProperties': {
-                    'range': {
-                        'sheetId': sheetId,
-                        'dimension': 'COLUMNS',
-                        'startIndex': 0,
-                        'endIndex': 1
-                    },
-                    'properties': {
-                        'pixelSize': 100
-                    },
-                    'fields': 'pixelSize'
-                }
-            },
-            {
-                'updateDimensionProperties': {
-                    'range': {
-                        'sheetId': sheetId,
-                        'dimension': 'COLUMNS',
-                        'startIndex': 1,
-                        'endIndex': 2
-                    },
-                    'properties': {
-                        'pixelSize': 600
-                    },
-                    'fields': 'pixelSize'
-                }
-            },
-            {
-                'updateDimensionProperties': {
-                    'range': {
-                        'sheetId': sheetId,
-                        'dimension': 'COLUMNS',
-                        'startIndex': 2,
-                        'endIndex': 3
-                    },
-                    'properties': {
-                        'pixelSize': 100
-                    },
-                    'fields': 'pixelSize'
-                }
-            }
-        ]
-        sheet.batchUpdate(spreadsheetId=google_spreadsheet_id, body={'requests': requests}).execute()
-
+        formatting_requests = create_formatting_requests_to_spreadsheet()
+        sheet.batchUpdate(spreadsheetId=google_spreadsheet_id, body={'requests': formatting_requests}).execute()
+        
+        df = pd.DataFrame(rows, columns=['Czas', 'Tekst', 'Confidence'])
         header_values = [df.columns.tolist()]
-
         sheet.values().update(
             spreadsheetId=google_spreadsheet_id,
             range='A1',
@@ -193,10 +147,57 @@ def send_to_spreadsheet(transcription_results: list, credentials: object, google
 
         os.system('cls')
         print('Transcriber finished its work!')
-
     except Exception as e:
         e_message = str(e) + " in: def send_to_spreadsheet(transcription_results: list, credentials: object, google_spreadsheet_id: str)"
         exception_message(e_message)
+
+def create_formatting_requests_to_spreadsheet():
+    sheetId = 0
+    formatting_requests = [
+    {
+        'updateDimensionProperties': {
+            'range': {
+                'sheetId': sheetId,
+                'dimension': 'COLUMNS',
+                'startIndex': 0,
+                'endIndex': 1
+            },
+            'properties': {
+                'pixelSize': 100
+            },
+            'fields': 'pixelSize'
+        }
+    },
+    {
+        'updateDimensionProperties': {
+            'range': {
+                'sheetId': sheetId,
+                'dimension': 'COLUMNS',
+                'startIndex': 1,
+                'endIndex': 2
+            },
+            'properties': {
+                'pixelSize': 600
+            },
+            'fields': 'pixelSize'
+        }
+    },
+    {
+        'updateDimensionProperties': {
+            'range': {
+                'sheetId': sheetId,
+                'dimension': 'COLUMNS',
+                'startIndex': 2,
+                'endIndex': 3
+            },
+            'properties': {
+                'pixelSize': 100
+            },
+            'fields': 'pixelSize'
+        }
+    }
+]
+    return formatting_requests
 
 
 def upload_video_to_cloud(video_file_path, credentials, bucket_name):
