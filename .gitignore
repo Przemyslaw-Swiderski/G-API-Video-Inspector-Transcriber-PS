@@ -6,3 +6,4 @@
 api.json
 /static/
 /sandbox/
+/.pytest_cache/
