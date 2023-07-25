@@ -1,10 +1,11 @@
 from flask import(
     Flask, jsonify, render_template,
-    request, session, redirect, url_for, threading)
+    request, session, redirect, url_for)
 import os
 from dotenv import load_dotenv
 from waitress import serve
 import gavit_API
+import threading
 
 load_dotenv()
 
@@ -45,15 +46,24 @@ def gavit_onedit():
 def gavit_nsd():
     if request.method == "POST":
         gavit_data = request.get_json()
-        video_link = gavit_data['videoLink'],
-        language_code = gavit_data['languageCode'],
+        video_link = gavit_data['videoLink']
+        language_code = gavit_data['languageCode']
         spreadsheet_id = gavit_data['spreadsheetId']
+        sheet_name =  gavit_data['sheetName']
         cell_address = gavit_data['cellAddress']
+
+        print(video_link)
+        print(language_code)
+        print(spreadsheet_id)
+        print(sheet_name)
+        print(cell_address)
+
 
         task_thread = threading.Thread(target=gavit_API.transcription, args=(
                                             video_link,
                                             language_code,
                                             spreadsheet_id,
+                                            sheet_name,
                                             cell_address
                                             )
                                         )
@@ -62,7 +72,7 @@ def gavit_nsd():
 
 
 
-    response_data = "Loading... "
+    response_data = "Loading... OK"
     return jsonify(response_data)
 
 

@@ -15,9 +15,15 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 def transcription(video_link, language_code, spreadsheet_id, sheet_name, cell_address):
 
+    print(video_link)
+    print(language_code)
+    print(spreadsheet_id)
+    print(sheet_name)
+    print(cell_address)
+
     credentials_file_path = os.environ.get('CREDENTIALS_FILE_PATH')
     credentials = service_account.Credentials.from_service_account_file(credentials_file_path)
-    bucket_name = os.environ.get('YOUR_GOOGLE_CLOUD_STORAGE_BUCKET_NAME')
+    # bucket_name = os.environ.get('YOUR_GOOGLE_CLOUD_STORAGE_BUCKET_NAME')
 
     input_content=''
     video_uri = video_link
