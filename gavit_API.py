@@ -165,7 +165,7 @@ def process_transcription_data_API(annotation_results):
                 alternative_data["word_level_info"].append(word_info_data)
             processed_transcription_data.append(alternative_data)
     # output_file = "C:/Code/APIIntTool/static/result_temp_file.json"
-    output_file = os.environ.get('TRANSCRIPTION_OTPUT_FILE_PATH')
+    output_file = os.environ.get('TRANSCRIPTION_OUTPUT_FILE_PATH')
     if os.path.exists(output_file):
         os.remove(output_file)
     with open(output_file, 'w') as json_file:
