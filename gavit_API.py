@@ -11,6 +11,9 @@ from flask import(
 import pandas as pd
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 def transcription(video_link, language_code, spreadsheet_id, sheet_name, cell_address):
@@ -20,6 +23,19 @@ def transcription(video_link, language_code, spreadsheet_id, sheet_name, cell_ad
     print(spreadsheet_id)
     print(sheet_name)
     print(cell_address)
+
+    log1_data = {
+        'video_link': video_link,
+        'language_code': language_code,
+        'spreadsheet_id': spreadsheet_id,
+        'sheet_name': sheet_name,
+        'cell_address': cell_address
+    }
+    # output_file = "static/log1.json"
+    # if os.path.exists(output_file):
+    #     os.remove(output_file)
+    # with open(output_file, 'w') as json_file:
+    #     json.dump(log1_data, json_file, indent=4)
 
     credentials_file_path = os.environ.get('CREDENTIALS_FILE_PATH')
     credentials = service_account.Credentials.from_service_account_file(credentials_file_path)
@@ -114,7 +130,8 @@ def process_transcription_data_API(annotation_results):
 
                 alternative_data["word_level_info"].append(word_info_data)
             processed_transcription_data.append(alternative_data)
-    output_file = "static/result_temp_file.json"
+    # output_file = "C:/Code/APIIntTool/static/result_temp_file.json"
+    output_file = os.environ.get('TRANSCRIPTION_OTPUT_FILE_PATH')
     if os.path.exists(output_file):
         os.remove(output_file)
     with open(output_file, 'w') as json_file:
@@ -300,12 +317,34 @@ def get_credentials_file_path_API() -> str:
 def error_information_message_API(msg_text_1: str, msg_text_2: str):
     messagebox.showerror('Error', msg_text_1)
     print(msg_text_2)
+
+    # error_information_message = {
+    #     'msg_text_1': msg_text_1,
+    #     'msg_text_2': msg_text_2
+    # }
+    # output_file = "static/error_information_message.json"
+    # if os.path.exists(output_file):
+    #     os.remove(output_file)
+    # with open(output_file, 'w') as json_file:
+    #     json.dump(error_information_message, json_file, indent=4)
+
     exit()
 
 
 def exception_message_API(e_message): 
     messagebox.showerror('Error', f'Transcriber did not finish its work due to an unexpected error. You may fix the error and try again. Error description: {e_message}')
     print(f'Transcriber did not finish its work due to an unexpected error. You may fix the error and try again. Error description: {e_message}')
+    
+    # exception_message = {
+    #     'e_message': e_message
+    # }
+    # output_file = "static/exception_message.json"
+    # if os.path.exists(output_file):
+    #     os.remove(output_file)
+    # with open(output_file, 'w') as json_file:
+    #     json.dump(exception_message, json_file, indent=4)
+    
+    
     exit()
 
 

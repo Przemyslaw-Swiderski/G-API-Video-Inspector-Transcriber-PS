@@ -69,20 +69,25 @@ def gavit_nsd():
                                         )
         task_thread.start()
 
+    # gavit_API.transcription(video_link,
+    #     language_code,
+    #     spreadsheet_id,
+    #     sheet_name,
+    #     cell_address
+    #     )
 
 
-
-    response_data = "Loading... OK"
+    response_data = "Transcription in progress, please wait ..."
     return jsonify(response_data)
 
-
+# ten
 
 if __name__ == "__main__":
 
     app.run(
             host = '0.0.0.0',
-            port = 8888,
+            port = 8894,
             debug=True
         )
     
-    # serve(app, port=8888, host="0.0.0.0")
+    # serve(app, port=8894, host="0.0.0.0")
