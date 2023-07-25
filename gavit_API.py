@@ -123,7 +123,7 @@ def check_if_gc_is_ready_with_transcription_API(credentials: object,
                                                 credentials_file_path: str):
     
     video_service = build('videointelligence', 'v1', credentials=credentials)
-    time_elapsed = 5
+    time_elapsed = 10
     while True:
         result = video_service.projects().locations().operations().get(name=operation_name).execute()
         if 'done' in result and result['done']:

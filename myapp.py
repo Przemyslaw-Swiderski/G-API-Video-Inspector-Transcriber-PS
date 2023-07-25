@@ -84,10 +84,10 @@ def gavit_nsd():
 
 if __name__ == "__main__":
 
-    app.run(
-            host = '0.0.0.0',
-            port = 8888,
-            debug=True
-        )
+    # app.run(
+    #         host = '0.0.0.0',
+    #         port = 8888,
+    #         debug=True
+    #     )
     
-    # serve(app, port=8894, host="0.0.0.0")
+    serve(app, port=8894, host="0.0.0.0")
