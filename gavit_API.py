@@ -24,13 +24,13 @@ def transcription(video_link, language_code, spreadsheet_id, sheet_name, cell_ad
     print(sheet_name)
     print(cell_address)
 
-    log1_data = {
-        'video_link': video_link,
-        'language_code': language_code,
-        'spreadsheet_id': spreadsheet_id,
-        'sheet_name': sheet_name,
-        'cell_address': cell_address
-    }
+    # log1_data = {
+    #     'video_link': video_link,
+    #     'language_code': language_code,
+    #     'spreadsheet_id': spreadsheet_id,
+    #     'sheet_name': sheet_name,
+    #     'cell_address': cell_address
+    # }
     # output_file = "static/log1.json"
     # if os.path.exists(output_file):
     #     os.remove(output_file)
@@ -46,13 +46,29 @@ def transcription(video_link, language_code, spreadsheet_id, sheet_name, cell_ad
     language_code = language_code
     google_spreadsheet_id = spreadsheet_id
 
-    transcription_results = transcribe_video_API(input_content, video_uri, credentials, language_code)
+    transcription_results = transcribe_video_API(input_content,
+                                                video_uri,
+                                                credentials,
+                                                language_code,
+                                                google_spreadsheet_id,
+                                                sheet_name,
+                                                cell_address,
+                                                credentials_file_path
+                                                )
 
-    send_to_spreadsheet_API(transcription_results, credentials, google_spreadsheet_id, sheet_name, cell_address, credentials_file_path)
+    send_to_spreadsheet_API(transcription_results, google_spreadsheet_id, sheet_name, cell_address, credentials_file_path)
 
 
 
-def transcribe_video_API(input_content: str, video_uri: str, credentials: object, language_code: str) -> list:
+def transcribe_video_API(input_content: str,
+                        video_uri: str,
+                        credentials: object,
+                        language_code: str,
+                        google_spreadsheet_id: str,
+                        sheet_name: str,
+                        cell_address: str,
+                        credentials_file_path: str
+                        ) -> list:
     video_client = videointelligence.VideoIntelligenceServiceClient(credentials=credentials)
     features = [videointelligence.Feature.SPEECH_TRANSCRIPTION]
     config = videointelligence.SpeechTranscriptionConfig(language_code=language_code, enable_automatic_punctuation=True)
@@ -77,7 +93,12 @@ def transcribe_video_API(input_content: str, video_uri: str, credentials: object
         e_message = str(e) + " in: \"operation = ...\" in def transcribe_video(input_content: str, credentials: object, language_code: str) -> list"
         exception_message_API(e_message)
 
-    check_if_gc_is_ready_with_transcription_API(credentials, operation_name)
+    check_if_gc_is_ready_with_transcription_API(credentials,
+                                                operation_name,
+                                                google_spreadsheet_id,
+                                                sheet_name,
+                                                cell_address,
+                                                credentials_file_path)
 
     try:
         result = operation.result()
@@ -94,9 +115,15 @@ def transcribe_video_API(input_content: str, video_uri: str, credentials: object
     return transcription_data
 
 
-def check_if_gc_is_ready_with_transcription_API(credentials: object, operation_name: str):
+def check_if_gc_is_ready_with_transcription_API(credentials: object,
+                                                operation_name: str,
+                                                google_spreadsheet_id: str,
+                                                sheet_name: str,
+                                                cell_address: str,
+                                                credentials_file_path: str):
+    
     video_service = build('videointelligence', 'v1', credentials=credentials)
-    time_elapsed = 0
+    time_elapsed = 5
     while True:
         result = video_service.projects().locations().operations().get(name=operation_name).execute()
         if 'done' in result and result['done']:
@@ -104,7 +131,14 @@ def check_if_gc_is_ready_with_transcription_API(credentials: object, operation_n
         time.sleep(5)
         os.system('cls')
         print(f'Transcription in progress. Please wait. Time elapsed: {str(time_elapsed)} seconds')
+        short_message_for_user = "Time elapsed: " + str(time_elapsed) + "s. Transcription in progress, please wait..."
+        send_short_message_to_spreadsheet_API(short_message_for_user,
+                                            google_spreadsheet_id,
+                                            sheet_name,
+                                            cell_address,
+                                            credentials_file_path)
         time_elapsed = time_elapsed + 5
+
 
 
 def process_transcription_data_API(annotation_results):
@@ -139,89 +173,7 @@ def process_transcription_data_API(annotation_results):
     return processed_transcription_data
 
 
-
-
-# def send_to_spreadsheet_API(transcription_results: list, credentials: object, google_spreadsheet_id: str):
-#     try:
-#         rows = []
-#         for transcription in transcription_results:
-#             transcript = transcription['transcript']
-#             confidence = transcription['confidence']
-#             word_level_info = transcription['word_level_info']
-#             start_time = word_level_info[0]['start_time']
-#             end_time = word_level_info[-1]['end_time']
-#             new_row = {'Czas': f'{start_time} - {end_time}', 'Tekst': transcript, 'Confidence': confidence}
-#             rows.append(new_row)
-
-#         service = build('sheets', 'v4', credentials=credentials)
-#         sheet = service.spreadsheets()
-
-#         sheet.values().clear(spreadsheetId=google_spreadsheet_id, range='A:Z').execute()
-#         formatting_requests = create_formatting_requests_to_spreadsheet_API()
-#         sheet.batchUpdate(spreadsheetId=google_spreadsheet_id, body={'requests': formatting_requests}).execute()
-        
-#         df = pd.DataFrame(rows, columns=['Czas', 'Tekst', 'Confidence'])
-#         header_values = [df.columns.tolist()]
-#         sheet.values().update(
-#             spreadsheetId=google_spreadsheet_id,
-#             range='A1',
-#             valueInputOption='RAW',
-#             body=dict(
-#                 majorDimension='ROWS',
-#                 values=header_values
-#             )
-#         ).execute()
-
-#         sheet.values().append(
-#             spreadsheetId=google_spreadsheet_id,
-#             range='A2',
-#             valueInputOption='RAW',
-#             insertDataOption='INSERT_ROWS',
-#             body=dict(
-#                 majorDimension='ROWS',
-#                 values=df.values.tolist()
-#             )
-#         ).execute()
-
-#         os.system('cls')
-#         print('Transcriber finished its work!')
-#     except Exception as e:
-#         e_message = str(e) + " in: def send_to_spreadsheet(transcription_results: list, credentials: object, google_spreadsheet_id: str)"
-#         exception_message_API(e_message)
-
-
-# def send_to_spreadsheet_API(transcription_results: list, credentials: object, google_spreadsheet_id: str, cell_address: str):
-#     try:
-#         cell_value = ""
-#         for i, transcription in enumerate(transcription_results, start=1):
-#             transcript = transcription['transcript']
-#             cell_value += f"{i}. {transcript}\n"
-
-#         service = build('sheets', 'v4', credentials=credentials)
-#         sheet = service.spreadsheets()
-
-#         # Clear the existing data from the specified cell
-#         sheet.values().clear(spreadsheetId=google_spreadsheet_id, range=cell_address).execute()
-
-#         # Write the concatenated transcriptions to the specified cell
-#         sheet.values().update(
-#             spreadsheetId=google_spreadsheet_id,
-#             range=cell_address,
-#             valueInputOption='RAW',
-#             body=dict(
-#                 majorDimension='ROWS',
-#                 values=[[cell_value]]
-#             )
-#         ).execute()
-
-#         os.system('cls')
-#         print('Transcriber finished its work!')
-#     except Exception as e:
-#         e_message = str(e) + " in: def send_to_spreadsheet(transcription_results: list, credentials: object, google_spreadsheet_id: str)"
-#         exception_message_API(e_message)
-
-
-def send_to_spreadsheet_API(transcription_results: list, credentials: object, google_spreadsheet_id: str, sheet_name: str, cell_address: str, credentials_file_path: str):
+def send_to_spreadsheet_API(transcription_results: list, google_spreadsheet_id: str, sheet_name: str, cell_address: str, credentials_file_path: str):
     try:
         cell_value = ""
         for i, transcription in enumerate(transcription_results, start=1):
@@ -248,6 +200,34 @@ def send_to_spreadsheet_API(transcription_results: list, credentials: object, go
 
         os.system('cls')
         print('Transcriber finished its work!')
+    except Exception as e:
+        e_message = str(e) + " in: def send_to_spreadsheet(transcription_results: list, credentials: object, google_spreadsheet_id: str, sheet_name: str, cell_address: str)"
+        exception_message_API(e_message)
+
+
+def send_short_message_to_spreadsheet_API(short_message_for_user: str, google_spreadsheet_id: str, sheet_name: str, cell_address: str, credentials_file_path: str):
+    try:
+
+        scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+        credentials = ServiceAccountCredentials.from_json_keyfile_name(credentials_file_path, scope)
+        gc = gspread.authorize(credentials)
+
+        # Open the specified spreadsheet by ID
+        sh = gc.open_by_key(google_spreadsheet_id)
+
+        # Select the specified sheet by name
+        worksheet = sh.worksheet(sheet_name)
+
+        # Clear the existing data from the specified cell
+        worksheet.update(cell_address, '')
+
+        cell_value = ""
+
+        # Write the concatenated transcriptions to the specified cell
+        worksheet.update(cell_address, short_message_for_user)
+
+        # os.system('cls')
+        # print('Transcriber finished its work!')
     except Exception as e:
         e_message = str(e) + " in: def send_to_spreadsheet(transcription_results: list, credentials: object, google_spreadsheet_id: str, sheet_name: str, cell_address: str)"
         exception_message_API(e_message)
@@ -349,20 +329,20 @@ def exception_message_API(e_message):
 
 
 
-def main():
+# def main():
 
-    # video_link = 'gs://gavit-bucket/short-video.mkv'
-    video_link = 'gs://gavit-bucket/wideo.mkv'
-    # language_code = 'en-US'
-    language_code = 'pl-PL'
-    # spreadsheet_id = '1d-2vH2ny3o_ZXKuODSx4WKyv2XTabMd6gkomGneizdg'
-    spreadsheet_id = '1i9ek5vkEsaY0v8Bw0sLgT_A3diFNqDLiD8nabPywy24'
-    cell_address = 'C2'
-    sheet_name = 'Arkusz5'
-
-
-    transcription(video_link, language_code, spreadsheet_id, sheet_name, cell_address)
+#     # video_link = 'gs://gavit-bucket/short-video.mkv'
+#     video_link = 'gs://gavit-bucket/wideo.mkv'
+#     # language_code = 'en-US'
+#     language_code = 'pl-PL'
+#     # spreadsheet_id = '1d-2vH2ny3o_ZXKuODSx4WKyv2XTabMd6gkomGneizdg'
+#     spreadsheet_id = '1i9ek5vkEsaY0v8Bw0sLgT_A3diFNqDLiD8nabPywy24'
+#     cell_address = 'C2'
+#     sheet_name = 'Arkusz5'
 
 
-if __name__ == '__main__':
-    main()
+#     transcription(video_link, language_code, spreadsheet_id, sheet_name, cell_address)
+
+
+# if __name__ == '__main__':
+#     main()

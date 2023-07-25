@@ -52,11 +52,11 @@ def gavit_nsd():
         sheet_name =  gavit_data['sheetName']
         cell_address = gavit_data['cellAddress']
 
-        print(video_link)
-        print(language_code)
-        print(spreadsheet_id)
-        print(sheet_name)
-        print(cell_address)
+        # print(video_link)
+        # print(language_code)
+        # print(spreadsheet_id)
+        # print(sheet_name)
+        # print(cell_address)
 
 
         task_thread = threading.Thread(target=gavit_API.transcription, args=(
@@ -86,7 +86,7 @@ if __name__ == "__main__":
 
     app.run(
             host = '0.0.0.0',
-            port = 8894,
+            port = 8888,
             debug=True
         )
     
