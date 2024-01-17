@@ -138,9 +138,13 @@ Ensure that the API credentials file (api.json) is in the expected location and 
 Check your internet connection and ensure that you have access to the Video Intelligence API and Sheets API.
 If the error persists, please refer to the error message displayed by the script and consult the Google Cloud API documentation for troubleshooting steps.
 
+## Contact Information
+For any questions or concerns, you can reach out to:
+- Email: przemyslaw.rafal.swiderski@gmail.com
+- GitHub: Przemyslaw-Swiderski
+
 ## License
 This project is licensed under the MIT License.
-
 Feel free to modify and customize the script to fit your specific requirements.
 
 ## Responsibility disclaimer
